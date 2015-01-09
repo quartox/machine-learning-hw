@@ -1,4 +1,0 @@
-"""Reads the machine learning homework data set and computes the linear regression."""
-
-__author__="Jesse Lord"
-__date__="January 8, 2015"
