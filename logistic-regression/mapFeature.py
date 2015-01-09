@@ -5,14 +5,12 @@ __date__="January 9, 2015"
 
 import numpy as np
 
-degree = 6
-nfeatures = 0
-for ii in range(1,degree+1):
-    nfeatures += ii+1
-
-def mapFeature(x):
+def mapFeature(x,degree):
     nexamples = x.shape
     nexamples = nexamples[1]
+    nfeatures = 0
+    for ii in range(1,degree+1):
+        nfeatures += ii+1
     output = np.ones([nfeatures+1,nexamples])
     iter = 1
     for ii in range(1,degree+1):

@@ -13,9 +13,10 @@ def computeCost(theta,X,y):
     J = sum((-y*np.log(h))-((1-y)*np.log(1-h)))/m
     return J
 
-def computeRegularizedCost(theta,X,y,lambda):
+def computeRegularizedCost(theta,X,y,lam):
     m=len(y)
     z = np.dot(theta,X)
     h = sigmoid(z)
-    J = ( (lambda*sum(theta[1:]*theta[1:])/2.0) + sum((-y*np.log(h))-((1-y)*np.log(1-h))) )/m
+    J = ( (lam*sum(theta[1:]*theta[1:])/2.0) + \
+          sum((-y*np.log(h))-((1-y)*np.log(1-h))) )/m
     return J

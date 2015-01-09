@@ -12,7 +12,7 @@ import matplotlib.pyplot as p
 # turn on to compute cost function for each iteration as a debug
 plotJ = 0
 
-def regularizedLogisiticDeriv(theta,X,y,lambda):
+def regularizedLogisiticDeriv(theta,X,y,lam):
     m = len(y)
     nfeatures = len(theta)
     deriv = np.empty(nfeatures)
@@ -20,7 +20,7 @@ def regularizedLogisiticDeriv(theta,X,y,lambda):
     h = sigmoid(z)
     deriv[0] = sum((h-y)*X[0,:])/m
     for jj in range(1,nfeatures):
-        deriv[jj] = (sum((h-y)*X[jj,:]) + lambda*theta[jj])/m
+        deriv[jj] = (sum((h-y)*X[jj,:]) + lam*theta[jj])/m
     return deriv
 
 def logisiticDeriv(theta,X,y):
