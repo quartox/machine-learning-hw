@@ -6,9 +6,8 @@ __date__="January 12, 2015"
 import numpy as np
 from sigmoid import sigmoid
 
-def computeCost(Theta1,Theta2,X,y,num_labels):
-
-    y = y[:,0]
+def computeH(Theta1,Theta2,X):
+    """Computes the output of the neural network."""
     ndims = X.shape
     num_examples = ndims[0]
     num_pixels = ndims[1]
@@ -25,16 +24,47 @@ def computeCost(Theta1,Theta2,X,y,num_labels):
     # computing the output layer values using the Theta2 matrix
     z3 = np.dot(Theta2,a2)
     h = sigmoid(z3) # the output of the neural network
+    return h
 
-    # putting the known answers of the training set in the correct matrix form
+def matrixY(y,num_labels):
+    """Computes the matrix form of y. Each column is zero except for the index of the true number in this example of hand-written numbers."""
+    y = y[:,0]
+    num_examples = len(y)
+    num_labels = int(np.amax(y)-np.amin(y))+1
     # note that the indeces of "y" are off by 1 since octave starts indeces at 1
-    ycomp = np.zeros([num_labels,num_examples])
+    Y = np.zeros([num_labels,num_examples])
     for ii in range(num_examples):
         if y[ii]==10:
-            ycomp[9,ii] = 1
+            Y[9,ii] = 1
         else:
-            ycomp[y[ii]-1,ii] = 1
+            Y[y[ii]-1,ii] = 1
+    return Y
 
-    J = np.sum((-ycomp*np.log(h))-((1-ycomp)*np.log(1-h)))/num_examples
 
-    print J
+def computeCost(Theta1,Theta2,X,y,num_labels):
+    """Computes the cost function for the neural network."""
+    h = computeH(Theta1,Theta2,X)
+    Y = matrixY(y,num_labels)
+
+    num_examples = len(y)
+
+    J = np.sum((-Y*np.log(h))-((1-Y)*np.log(1-h)))/num_examples
+
+    return J
+
+def computeRegularizedCost(Theta1,Theta2,X,y,num_labels,lam):
+    """Computes the regularized cost function for the neural network."""
+    h = computeH(Theta1,Theta2,X)
+    Y = matrixY(y,num_labels)
+
+    num_examples = len(y)
+
+    print Theta1.shape,Theta2.shape
+
+    # computed regularized cost function
+    # note that we do not include the bias unit,
+    # i.e. Theta1[:,0] and Theta2[:,0] in the regularization
+    J = np.sum((-Y*np.log(h))-((1-Y)*np.log(1-h)))/num_examples + \
+        (lam*(np.sum(Theta1[:,1:]) + np.sum(Theta2[:,1:]))/(2.0*num_examples))
+
+    return J
