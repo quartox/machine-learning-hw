@@ -4,6 +4,7 @@ __author__="Jesse Lord"
 __date__="January 9, 2015"
 
 import numpy as np
+from sigmoid import sigmoid
 
 def predictOneVsAll(X,y,all_thetas,num_labels):
     y = y[:,0]
@@ -13,7 +14,7 @@ def predictOneVsAll(X,y,all_thetas,num_labels):
     newX = np.ones([n,m+1])
     newX[:,1:] = X
     for ii in range(num_labels):
-        h = np.dot(newX,all_thetas[ii,:])
+        h = sigmoid(np.dot(newX,all_thetas[ii,:]))
         if ii==0:
             hmax = h
             itermax = np.zeros([len(h)])+10
