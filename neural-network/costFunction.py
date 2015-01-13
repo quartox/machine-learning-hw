@@ -40,7 +40,6 @@ def matrixY(y,num_labels):
             Y[y[ii]-1,ii] = 1
     return Y
 
-
 def computeCost(Theta1,Theta2,X,y,num_labels):
     """Computes the cost function for the neural network."""
     h = computeH(Theta1,Theta2,X)
@@ -59,12 +58,11 @@ def computeRegularizedCost(Theta1,Theta2,X,y,num_labels,lam):
 
     num_examples = len(y)
 
-    print Theta1.shape,Theta2.shape
-
     # computed regularized cost function
     # note that we do not include the bias unit,
     # i.e. Theta1[:,0] and Theta2[:,0] in the regularization
-    J = np.sum((-Y*np.log(h))-((1-Y)*np.log(1-h)))/num_examples + \
-        (lam*(np.sum(Theta1[:,1:]) + np.sum(Theta2[:,1:]))/(2.0*num_examples))
+    J = ( np.sum((-Y*np.log(h))-((1-Y)*np.log(1-h))) + \
+          ( 0.5*lam*(np.sum(Theta1[:,1:]*Theta1[:,1:]) + \
+                     np.sum(Theta2[:,1:]*Theta2[:,1:])) ) ) / num_examples
 
     return J
