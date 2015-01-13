@@ -6,6 +6,14 @@ __date__="January 12, 2015"
 import numpy as np
 import sigmoid
 
+def reshapeThetas(Thetas,input_layer,hidden_layer,num_labels):
+    """Reshapes the matrices Theta1 and Theta2 from the flattened Thetas."""
+    Theta1 = np.reshape(Thetas[0:(input_layer*hidden_layer-1)],
+                        (hidden_layer,input_layer+1))
+    Theta2 = np.reshape(Thetas[(input_layer*hidden_layer):Thetas.size-1],
+                        (num_labels,hidden_layer+1))
+    return (Theta1,Theta2)
+
 def computeH(Theta1,Theta2,X):
     """Computes the output of the neural network."""
     ndims = X.shape
@@ -40,8 +48,11 @@ def matrixY(y,num_labels):
             Y[y[ii]-1,ii] = 1
     return Y
 
-def computeCost(Theta1,Theta2,X,y,num_labels):
+def computeCost(Thetas,X,y,input_layer,hidden_layer,num_labels):
     """Computes the cost function for the neural network."""
+    # reshapes the matrices Theta1 and Theta2 from the flattened Thetas
+    (Theta1,Theta2) = reshapeThetas(Thetas,input_layer,hidden_layer,num_labels)
+
     (h,z2,a2,a1) = computeH(Theta1,Theta2,X)
     Y = matrixY(y,num_labels)
 
@@ -51,8 +62,11 @@ def computeCost(Theta1,Theta2,X,y,num_labels):
 
     return J
 
-def computeRegularizedCost((Theta1,Theta2),X,y,num_labels,lam):
+def computeRegularizedCost(Thetas,X,y,input_layer,hidden_layer,num_labels,lam):
     """Computes the regularized cost function for the neural network."""
+    # reshapes the matrices Theta1 and Theta2 from the flattened Thetas
+    (Theta1,Theta2) = reshapeThetas(Thetas,input_layer,hidden_layer,num_labels)
+
     (h,z2,a2,a1) = computeH(Theta1,Theta2,X)
     Y = matrixY(y,num_labels)
 
@@ -67,7 +81,11 @@ def computeRegularizedCost((Theta1,Theta2),X,y,num_labels,lam):
 
     return J
 
-def computeRegularizedDeriv((Theta1,Theta2),X,y,num_labels,lam):
+def computeRegularizedDeriv(Thetas,X,y,input_layer,hidden_layer,num_labels,lam):
+    """Computes the derivative of the regularized cost function."""
+    # reshapes the matrices Theta1 and Theta2 from the flattened Thetas
+    (Theta1,Theta2) = reshapeThetas(Thetas,input_layer,hidden_layer,num_labels)
+
     num_examples = len(y)
 
     # start with forward propagation
@@ -82,4 +100,8 @@ def computeRegularizedDeriv((Theta1,Theta2),X,y,num_labels,lam):
     Delta1[:,1:] += lam*Theta1[:,1:]/num_examples
     Delta2 = np.dot(delta3,np.transpose(a2))/num_examples
     Delta2[:,1:] += lam*Theta2[:,1:]/num_examples
-    return (Delta1,Delta2)
+
+    # Flattening the derivatives
+    Deltas = np.reshape(Theta1,Theta1.size)
+    Deltas = np.append(Deltas,Theta2)
+    return Deltas
