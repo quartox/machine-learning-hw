@@ -5,14 +5,13 @@ __date__="January 12, 2015"
 import scipy.io as io
 
 def readData():
-    mat = io.loadmat("ex3data1.mat")
+    mat = io.loadmat("ex4data1.mat")
     y = mat['y']
     X = mat['X']
     return (X,y)
 
 def readWeights():
-    mat = io.loadmat("ex3weights.mat")
-    print mat.keys()
+    mat = io.loadmat("ex4weights.mat")
     Theta1 = mat['Theta1']
     Theta2 = mat['Theta2']
     return (Theta1,Theta2)
