@@ -4,7 +4,7 @@ __author__="Jesse Lord"
 __date__="January 12, 2015"
 
 import numpy as np
-from sigmoid import sigmoid
+import sigmoid
 
 def computeH(Theta1,Theta2,X):
     """Computes the output of the neural network."""
@@ -19,12 +19,12 @@ def computeH(Theta1,Theta2,X):
     # creating the hidden layer outputs using the sigmoid function
     ndims = z2.shape
     a2 = np.ones([ndims[0]+1,num_examples])
-    a2[1:,:] = sigmoid(z2)
+    a2[1:,:] = sigmoid.sigmoid(z2)
 
     # computing the output layer values using the Theta2 matrix
     z3 = np.dot(Theta2,a2)
-    h = sigmoid(z3) # the output of the neural network
-    return h
+    h = sigmoid.sigmoid(z3) # the output of the neural network
+    return (h,z2,a2,a1)
 
 def matrixY(y,num_labels):
     """Computes the matrix form of y. Each column is zero except for the index of the true number in this example of hand-written numbers."""
@@ -42,7 +42,7 @@ def matrixY(y,num_labels):
 
 def computeCost(Theta1,Theta2,X,y,num_labels):
     """Computes the cost function for the neural network."""
-    h = computeH(Theta1,Theta2,X)
+    (h,z2,a2,a1) = computeH(Theta1,Theta2,X)
     Y = matrixY(y,num_labels)
 
     num_examples = len(y)
@@ -51,9 +51,9 @@ def computeCost(Theta1,Theta2,X,y,num_labels):
 
     return J
 
-def computeRegularizedCost(Theta1,Theta2,X,y,num_labels,lam):
+def computeRegularizedCost((Theta1,Theta2),X,y,num_labels,lam):
     """Computes the regularized cost function for the neural network."""
-    h = computeH(Theta1,Theta2,X)
+    (h,z2,a2,a1) = computeH(Theta1,Theta2,X)
     Y = matrixY(y,num_labels)
 
     num_examples = len(y)
@@ -66,3 +66,20 @@ def computeRegularizedCost(Theta1,Theta2,X,y,num_labels,lam):
                      np.sum(Theta2[:,1:]*Theta2[:,1:])) ) ) / num_examples
 
     return J
+
+def computeRegularizedDeriv((Theta1,Theta2),X,y,num_labels,lam):
+    num_examples = len(y)
+
+    # start with forward propagation
+    (a3,z2,a2,a1) = computeH(Theta1,Theta2,X)
+    Y = matrixY(y,num_labels)
+
+    # computing the error in the cost, i.e. the partial derivative of the cost
+    delta3 = (a3-Y)
+    delta2 = np.dot(np.transpose(Theta2[:,1:]),delta3) * \
+             sigmoid.sigmoidGradient(z2)
+    Delta1 = np.dot(delta2,np.transpose(a1))/num_examples
+    Delta1[:,1:] += lam*Theta1[:,1:]/num_examples
+    Delta2 = np.dot(delta3,np.transpose(a2))/num_examples
+    Delta2[:,1:] += lam*Theta2[:,1:]/num_examples
+    return (Delta1,Delta2)
