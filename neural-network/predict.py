@@ -45,4 +45,6 @@ def predict(X,y,Theta1,Theta2):
         p.imshow(a)
         p.show()
 
+    prediction = np.mean(prediction==y)
+
     return prediction
