@@ -15,5 +15,4 @@ if __name__=="__main__":
     (Theta1,Theta2) = readData.readWeights()
 
     prediction = predict(X,y,Theta1,Theta2)
-    prediction = np.mean(prediction==y)
     print "Neural Network determines the handwriting correctly on the training set "+str(100*prediction)+"% of the time."
