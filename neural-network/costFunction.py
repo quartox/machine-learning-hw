@@ -8,9 +8,9 @@ import sigmoid
 
 def reshapeThetas(Thetas,input_layer,hidden_layer,num_labels):
     """Reshapes the matrices Theta1 and Theta2 from the flattened Thetas."""
-    Theta1 = np.reshape(Thetas[0:(input_layer*hidden_layer-1)],
+    Theta1 = np.reshape(Thetas[:((input_layer+1)*hidden_layer)],
                         (hidden_layer,input_layer+1))
-    Theta2 = np.reshape(Thetas[(input_layer*hidden_layer):Thetas.size-1],
+    Theta2 = np.reshape(Thetas[((input_layer+1)*hidden_layer):],
                         (num_labels,hidden_layer+1))
     return (Theta1,Theta2)
 
@@ -60,6 +60,8 @@ def computeCost(Thetas,X,y,input_layer,hidden_layer,num_labels):
 
     J = np.sum((-Y*np.log(h))-((1-Y)*np.log(1-h)))/num_examples
 
+    print Thetas.shape
+
     return J
 
 def computeRegularizedCost(Thetas,X,y,input_layer,hidden_layer,num_labels,lam):
@@ -102,6 +104,7 @@ def computeRegularizedDeriv(Thetas,X,y,input_layer,hidden_layer,num_labels,lam):
     Delta2[:,1:] += lam*Theta2[:,1:]/num_examples
 
     # Flattening the derivatives
-    Deltas = np.reshape(Theta1,Theta1.size)
-    Deltas = np.append(Deltas,Theta2)
+    Deltas = np.reshape(Delta1,Delta1.size)
+    Deltas = np.append(Deltas,Delta2)
+
     return Deltas
