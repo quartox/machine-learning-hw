@@ -4,19 +4,26 @@ __author__="Jesse Lord"
 __date__="January 13, 2015"
 
 import costFunction
-from sigmoid import sigmoidGradient
 import numpy as np
+from scipy.optimize import fmin_bfgs
+from scipy.optimize import fmin_l_bfgs_b
 
-def backPropagation(Theta1,Theta2,X,y,num_labels):
+def backPropagation(Theta1,Theta2,X,y,input_layer,hidden_layer,num_labels,lam):
 
-    num_examples = len(y)
+    # Flattening the Thetas
+    Thetas = np.reshape(Theta1,Theta1.size)
+    Thetas = np.append(Thetas,Theta2)
 
-    # start with forward propagation
-    (a3,z2,a2,a1) = costFunction.computeH(Theta1,Theta2,X)
-    Y = costFunction.matrixY(y,num_labels)
+    print "Starting l_bfgs_b minimization."
 
-    # computing the error in the cost, i.e. the partial derivative of the cost
-    delta3 = (a3-Y)
-    delta2 = np.dot(np.transpose(Theta2[:,1:]),delta3)*sigmoidGradient(z2)
-    Delta1 = np.dot(delta2,np.transpose(a1))/num_examples
-    Delta2 = np.dot(delta3,np.transpose(a2))/num_examples
+    (Thetas,f,d) = fmin_l_bfgs_b(costFunction.computeRegularizedCost,Thetas,
+                                 fprime=costFunction.computeRegularizedDeriv,
+                                 args=(X,y,input_layer,hidden_layer,num_labels,
+                                       lam),maxiter=100,maxfun=100)
+
+    print "Finished minimization with cost equal to: ",f
+
+    (Theta1,Theta2) = costFunction.reshapeThetas(Thetas,input_layer,
+                                                 hidden_layer,num_labels)
+
+    return (Theta1,Theta2)
