@@ -3,10 +3,14 @@
 __author__="Jesse Lord"
 __date__="January 15, 2015"
 
+import numpy as np
+from regression import regression
+from costFunction import computeCost
+
 def validationCurve(theta,X,y,Xcv,ycv):
     lam = np.zeros(1)
     ii=0.001
-    while ii<=10:
+    while ii<=15:
         lam = np.append(lam,ii)
         ii *= 3.0
     error_train = np.empty(lam.size)
