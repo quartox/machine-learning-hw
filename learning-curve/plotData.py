@@ -48,12 +48,27 @@ def plotNorm(X,y,theta,mu,sigma):
     p.plot(xplot,yplot,'r')
     p.show()
 
-def plotError(error_train,error_cv,x=None):
+def plotError(error_train,error_cv,x=None,xlabel=None):
     """Plots the training error and cross validation error for a given range of parameters. If no x-axis is sent to function then it is assumed to be learning curve with number of training examples as x-axis."""
     if x is None:
         n = len(error_train)
         x = np.arange(n)+1
-    p.plot(x,error_train,'g')
-    p.plot(x,error_cv,'b')
-
+    p.plot(x,error_train,'g',linewidth=3,label='Training set error')
+    p.plot(x,error_cv,'b',linewidth=3,label='Cross-Validation set error')
+    # setting the maximum and minimum range of the plotted y-axis equal
+    # to 2 and 0.5 times the maximum and minimum
+    # median of the errors, respectively
+    median_train = np.median(error_train)
+    median_cv = np.median(error_cv)
+    ymax = 2.0*max([median_train,median_cv])
+    ymin = 0.5*min([median_train,median_cv])
+    if ymin < 0:
+        ymin = 0.0
+    p.ylim(ymin,ymax)
+    if xlabel is None:
+        p.xlabel('Number of training examples')
+    else:
+        p.xlabel(xlabel)
+    p.ylabel('Error in data sets')
+    p.legend()
     p.show()
