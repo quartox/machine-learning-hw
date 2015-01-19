@@ -15,3 +15,13 @@ def readData2():
     y = mat['y']
     X = mat['X']
     return (X,y)
+
+def readData3():
+    mat = io.loadmat("ex6data3.mat")
+    # training set data
+    y = mat['y']
+    X = mat['X']
+    # cross validation data
+    ycv = mat['yval']
+    Xcv = mat['Xval']
+    return (X,y,Xcv,ycv)
